@@ -15,7 +15,7 @@ Before running the application, ensure you have the following installed:
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/financial-guru.git
+   git clone https://github.com/gTauro8/financial-guru.git
    cd financial-guru
 
 2. ** Set up environment variables:
