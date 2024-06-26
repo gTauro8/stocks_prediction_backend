@@ -37,7 +37,7 @@ Before running the application, ensure you have the following installed:
    Make sure MongoDB is running locally on the default port 27017.
 
 
-##Usage
+## Usage
 
 Use Postman or any API testing tool to interact with the endpoints:
 
@@ -65,6 +65,22 @@ Body:
 
 Response: auth_token
 
+
+## Endpoints
+
+** Authentication
+- POST /register: Register a new user.
+- POST /login: Login with username and password to receive JWT token.
+** Questionnaire and Recommendations
+- POST /api/questionnaire: Save or update user's financial questionnaire responses.
+- POST /api/recommend: Get investment recommendations based on user's preferences.
+- POST /api/predict: Predict returns for recommended investments.
+** User Profile
+- GET /api/user/profile: Retrieve user's profile and financial questionnaire responses.
+
+
+## Contributing
+- Contributions are welcome! Feel free to open issues or pull requests for any improvements or feature requests.
 
       
 
