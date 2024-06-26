@@ -22,7 +22,7 @@ Before running the application, ensure you have the following installed:
     Create a json (Config.json) file in the root directory and add the following:
      ```JSON
        {
-          "JWT_SECRET": "a4d1d2caca8527d49f147325c21ff7251fa6c31de1244136b9513c69ec592a52"
+          "JWT_SECRET": "your_generated_token"
        }
      ```
    
