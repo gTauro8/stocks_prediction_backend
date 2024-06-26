@@ -1,4 +1,4 @@
-# Financial Guru Web Application
+# Stocks Predictions Web Application
 
 This repository contains a web application built with Go (Golang) and Gin framework, designed for managing user financial questionnaires and providing investment recommendations.
 
@@ -15,8 +15,7 @@ Before running the application, ensure you have the following installed:
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/gTauro8/financial-guru.git
-   cd financial-guru
+   https://github.com/gTauro8/stocks_prediction_backend
 
 2. **Set up environment variables:**
     Create a json (Config.json) file in the root directory and add the following:
