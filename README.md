@@ -18,7 +18,7 @@ Before running the application, ensure you have the following installed:
    git clone https://github.com/gTauro8/financial-guru.git
    cd financial-guru
 
-2. **Set up environment variables:
+2. **Set up environment variables:**
     Create a json (Config.json) file in the root directory and add the following:
      ```JSON
        {
@@ -29,11 +29,11 @@ Before running the application, ensure you have the following installed:
      ```bash
      node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
      
-3. **Install dependencies:
+3. **Install dependencies:**
    ```bash
    go mod tidy
 
-3. ** Start MongoDB
+3. **Start MongoDB**
    Make sure MongoDB is running locally on the default port 27017.
 
 
@@ -41,9 +41,9 @@ Before running the application, ensure you have the following installed:
 
 Use Postman or any API testing tool to interact with the endpoints:
 
-- **Register a new user:
+- **Register a new user:**
 
-POST http://localhost:8080/register
+**POST** http://localhost:8080/register
 Body:
   ```JSON
       {
@@ -52,9 +52,9 @@ Body:
       }
  ```
  
-  - **Login user:
+  - **Login user:**
 
-POST http://localhost:8080/login
+**POST** http://localhost:8080/login
 Body:
   ```JSON
       {
@@ -68,20 +68,20 @@ Response: auth_token
 
 ## Endpoints
 
-**Authentication
-- **POST /register: Register a new user.
-- **POST /login: Login with username and password to receive JWT token.
+**Authentication**
+- **POST** /register: Register a new user.
+- **POST** /login: Login with username and password to receive JWT token.
 
   
-**Questionnaire and Recommendations 
-- **POST /api/questionnaire: Save or update user's financial questionnaire responses.
-- **POST /api/recommend: Get investment recommendations based on user's preferences.
-- **POST /api/predict: Predict returns for recommended investments.
+**Questionnaire and Recommendations** 
+- **POST** /api/questionnaire: Save or update user's financial questionnaire responses.
+- **POST** /api/recommend: Get investment recommendations based on user's preferences.
+- **POST** /api/predict: Predict returns for recommended investments.
   
-**User Profile
-- **GET /api/user/profile: Retrieve user's profile and financial questionnaire responses.
+**User Profile**
+- **GET** /api/user/profile: Retrieve user's profile and financial questionnaire responses.
 
-  All **/api/ methods neded Autorization Berear token
+  All **/api/** methods neded Autorization Berear token
 
 
 ## Contributing
