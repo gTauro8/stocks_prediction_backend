@@ -71,12 +71,17 @@ Response: auth_token
 ** Authentication
 - POST /register: Register a new user.
 - POST /login: Login with username and password to receive JWT token.
-** Questionnaire and Recommendations
+
+  
+** Questionnaire and Recommendations 
 - POST /api/questionnaire: Save or update user's financial questionnaire responses.
 - POST /api/recommend: Get investment recommendations based on user's preferences.
 - POST /api/predict: Predict returns for recommended investments.
+  
 ** User Profile
 - GET /api/user/profile: Retrieve user's profile and financial questionnaire responses.
+
+  All /api/ methods neded Autorization Berear token
 
 
 ## Contributing
