@@ -3,20 +3,15 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"myapp/models"
-	"myapp/utils"
 	"net/http"
 )
 
 func SaveUserResponses(c *gin.Context) {
 	var responses models.UserResponses
+	userID := c.Param("user_id")
+
 	if err := c.ShouldBindJSON(&responses); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
-		return
-	}
-
-	userID, err := utils.GetUserIDFromContext(c)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
 
@@ -32,14 +27,10 @@ func SaveUserResponses(c *gin.Context) {
 
 func UpdateUserResponses(c *gin.Context) {
 	var responses models.UserResponses
+	userID := c.Param("user_id")
+
 	if err := c.ShouldBindJSON(&responses); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
-		return
-	}
-
-	userID, err := utils.GetUserIDFromContext(c)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
 		return
 	}
 
@@ -54,11 +45,7 @@ func UpdateUserResponses(c *gin.Context) {
 }
 
 func GetUserResponses(c *gin.Context) {
-	userID, err := utils.GetUserIDFromContext(c)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
+	userID := c.Param("user_id")
 
 	responses, err := models.GetUserResponses(userID)
 	if err != nil {

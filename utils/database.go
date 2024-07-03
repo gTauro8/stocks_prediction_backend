@@ -10,7 +10,7 @@ import (
 )
 
 var mongoURI = "mongodb://localhost:27017"
-var dbName = "myapp"
+var dbName = "financial_guru"
 var collectionName = "user_responses"
 
 var client *mongo.Client

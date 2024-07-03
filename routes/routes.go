@@ -17,11 +17,14 @@ func SetupRoutes(r *gin.Engine) {
 			c.JSON(200, gin.H{"message": "You have access to this resource"})
 		})
 
-		authorized.POST("/questionnaire", controllers.SaveUserResponses)
-		authorized.PUT("/questionnaire", controllers.UpdateUserResponses)
-		authorized.GET("/questionnaire", controllers.GetUserResponses)
-		//authorized.GET("/recommend", controllers.GetRecommendations)
-		//authorized.POST("/recommend", controllers.Recommend)
-		//authorized.POST("/predict", controllers.Predict)
+		userResponses := authorized.Group("user-responses")
+		{
+			userResponses.POST("/:user_id", controllers.SaveUserResponses)
+			userResponses.PUT("/:user_id", controllers.UpdateUserResponses)
+			userResponses.GET("/:user_id", controllers.GetUserResponses)
+		}
+		authorized.GET("/recommendations/:user_id", controllers.GetRecommendations)
+		authorized.POST("/wallet", middlewares.AuthMiddleware(), controllers.AddToWallet)
+		authorized.GET("/wallet/:user_id", middlewares.AuthMiddleware(), controllers.GetWallet)
 	}
 }

@@ -73,12 +73,18 @@ Response: auth_token
 
   
 **Questionnaire and Recommendations** 
-- **POST** /api/questionnaire: Save or update user's financial questionnaire responses.
+- **POST** /api/user-responses/:user_id: Save user's financial questionnaire responses.
+- **PUT** /api/user-responses/:user_id: Update user's financial questionnaire responses.
+- **GET** /api/user-responses/:user_id: Show or update user's financial questionnaire responses.
 - **POST** /api/recommend: Get investment recommendations based on user's preferences.
-- **POST** /api/predict: Predict returns for recommended investments.
   
 **User Profile**
 - **GET** /api/user/profile: Retrieve user's profile and financial questionnaire responses.
+
+
+**Waller Management**
+- **POST** /api/wallet/add: Add new investments to the user's wallet.
+- **GET** /api/wallet/{id}: Retrieve user's wallet and investment details.
 
   All **/api/** methods neded Autorization Berear token
 
