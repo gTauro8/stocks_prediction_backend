@@ -51,4 +51,5 @@ func Setup() {
 	}
 
 	DB = client.Database("financial_guru")
+
 }

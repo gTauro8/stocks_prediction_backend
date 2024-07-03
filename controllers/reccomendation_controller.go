@@ -34,11 +34,11 @@ func GetRecommendations(c *gin.Context) {
 		for _, pred := range preds {
 			date, ok := pred["ds"].(string)
 			if !ok {
-				continue // handle or log the error properly in a real scenario
+				continue
 			}
 			value, ok := pred["yhat"].(float64)
 			if !ok {
-				continue // handle or log the error properly in a real scenario
+				continue
 			}
 			predictions = append(predictions, models.Prediction{
 				Date:  date,
@@ -51,10 +51,15 @@ func GetRecommendations(c *gin.Context) {
 		})
 	}
 
-	if err := models.AddToWallet(userID, tickerPredictions); err != nil {
+	if err := models.AddToWallet(userID, tickerPredictions, userResponses.InvestmentAmount, recommendations.ExpectedGain); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save recommendations to wallet"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"tickers": recommendations.Tickers, "predictions": recommendations.Predictions})
+	c.JSON(http.StatusOK, gin.H{
+		"tickers":         recommendations.Tickers,
+		"predictions":     recommendations.Predictions,
+		"amount_invested": userResponses.InvestmentAmount,
+		"expected_gain":   recommendations.ExpectedGain,
+	})
 }

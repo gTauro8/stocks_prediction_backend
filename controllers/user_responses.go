@@ -3,6 +3,7 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"myapp/models"
+	"myapp/utils"
 	"net/http"
 )
 
@@ -41,7 +42,42 @@ func UpdateUserResponses(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Responses updated successfully"})
+	recommendations, err := utils.GetRecommendations(responses)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get recommendations"})
+		return
+	}
+
+	var tickerPredictions []models.TickerPrediction
+	for ticker, preds := range recommendations.Predictions {
+		var predictions []models.Prediction
+		for _, pred := range preds {
+			date, ok := pred["ds"].(string)
+			if !ok {
+				continue
+			}
+			value, ok := pred["yhat"].(float64)
+			if !ok {
+				continue
+			}
+			predictions = append(predictions, models.Prediction{
+				Date:  date,
+				Value: value,
+			})
+		}
+		tickerPredictions = append(tickerPredictions, models.TickerPrediction{
+			Ticker:      ticker,
+			Predictions: predictions,
+		})
+	}
+
+	amountInvested := responses.InvestmentAmount
+	if err := models.AddToWallet(userID, tickerPredictions, amountInvested, recommendations.ExpectedGain); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update wallet"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Responses and wallet updated successfully"})
 }
 
 func GetUserResponses(c *gin.Context) {

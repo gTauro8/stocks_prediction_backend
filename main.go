@@ -4,10 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"myapp/config"
 	"myapp/routes"
+	"myapp/routines"
 )
 
 func main() {
 	config.Setup()
+
+	go routines.StartDailyUpdateRoutine()
 
 	r := gin.Default()
 	routes.SetupRoutes(r)

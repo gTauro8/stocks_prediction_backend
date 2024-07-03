@@ -14,7 +14,6 @@ type UserResponses struct {
 	AnnualIncome            string   `json:"annual_income" bson:"annual_income"`
 	Wealth                  string   `json:"wealth" bson:"wealth"`
 	InvestmentObjectives    []string `json:"investment_objectives" bson:"investment_objectives"`
-	InvestmentPurpose       []string `json:"investment_purpose" bson:"investment_purpose"`
 	InvestmentExperience    string   `json:"investment_experience" bson:"investment_experience"`
 	MarketKnowledge         string   `json:"market_knowledge" bson:"market_knowledge"`
 	ReactionToMarketDrop    string   `json:"reaction_to_market_drop" bson:"reaction_to_market_drop"`
@@ -25,6 +24,7 @@ type UserResponses struct {
 	PastInvestments         []string `json:"past_investments" bson:"past_investments"`
 	PreferredInvestments    []string `json:"preferred_investments" bson:"preferred_investments"`
 	RiskProfile             string   `json:"risk_profile" bson:"risk_profile"`
+	InvestmentAmount        float64  `json:"investment_amount" bson:"investment_amount"`
 }
 
 func SaveUserResponses(responses *UserResponses) error {

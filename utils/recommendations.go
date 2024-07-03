@@ -11,8 +11,10 @@ import (
 )
 
 type RecommendationResponse struct {
-	Tickers     []string                            `json:"tickers"`
-	Predictions map[string][]map[string]interface{} `json:"predictions"`
+	Tickers        []string                            `json:"tickers"`
+	Predictions    map[string][]map[string]interface{} `json:"predictions"`
+	AmountInvested float64                             `json:"amount_invested"`
+	ExpectedGain   map[string]float64                  `json:"expected_gain"`
 }
 
 func GetRecommendations(userResponses models.UserResponses) (RecommendationResponse, error) {

@@ -9,22 +9,33 @@ import (
 func AddToWallet(c *gin.Context) {
 	userID := c.Param("user_id")
 
-	var tickers []string
-	if err := c.ShouldBindJSON(&tickers); err != nil {
+	var requestData struct {
+		Tickers        []string           `json:"tickers"`
+		AmountInvested float64            `json:"amount_invested"`
+		ExpectedGain   map[string]float64 `json:"expected_gain"`
+	}
+
+	if err := c.ShouldBindJSON(&requestData); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
 
 	var tickerPredictions []models.TickerPrediction
-	for _, ticker := range tickers {
+	for _, ticker := range requestData.Tickers {
 		tickerPredictions = append(tickerPredictions, models.TickerPrediction{
-			Ticker: ticker,
-			// For now, we're not adding predictions here. Adjust as needed.
+			Ticker:      ticker,
 			Predictions: []models.Prediction{},
 		})
 	}
 
-	if err := models.AddToWallet(userID, tickerPredictions); err != nil {
+	wallet := models.Wallet{
+		UserID:         userID,
+		Tickers:        tickerPredictions,
+		AmountInvested: requestData.AmountInvested,
+		ExpectedGain:   requestData.ExpectedGain,
+	}
+
+	if err := models.AddToWallet(userID, wallet.Tickers, wallet.AmountInvested, wallet.ExpectedGain); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add to wallet"})
 		return
 	}

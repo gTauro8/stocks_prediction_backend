@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"myapp/config"
+	"time"
 )
 
 type Prediction struct {
@@ -19,16 +20,25 @@ type TickerPrediction struct {
 }
 
 type Wallet struct {
-	UserID  string             `json:"user_id" bson:"user_id"`
-	Tickers []TickerPrediction `json:"tickers" bson:"tickers"`
+	UserID         string             `json:"user_id" bson:"user_id"`
+	Tickers        []TickerPrediction `json:"tickers" bson:"tickers"`
+	AmountInvested float64            `json:"amount_invested" bson:"amount_invested"`
+	ExpectedGain   map[string]float64 `json:"expected_gain" bson:"expected_gain"`
+	DateAdded      time.Time          `json:"date_added" bson:"date_added"`
 }
 
-func AddToWallet(userID string, tickerPredictions []TickerPrediction) error {
+func AddToWallet(userID string, tickerPredictions []TickerPrediction, amountInvested float64, expectedGain map[string]float64) error {
 	collection := config.DB.Collection("wallets")
 
-	// Find the wallet for the user
 	filter := bson.M{"user_id": userID}
-	update := bson.M{"$push": bson.M{"tickers": bson.M{"$each": tickerPredictions}}}
+	update := bson.M{
+		"$push": bson.M{"tickers": bson.M{"$each": tickerPredictions}},
+		"$set": bson.M{
+			"amount_invested": amountInvested,
+			"expected_gain":   expectedGain,
+			"date_added":      time.Now(),
+		},
+	}
 	opts := options.Update().SetUpsert(true)
 
 	_, err := collection.UpdateOne(context.Background(), filter, update, opts)
@@ -45,4 +55,22 @@ func GetWallet(userID string) (*Wallet, error) {
 		return nil, nil
 	}
 	return &wallet, err
+}
+
+func UpdateWallet(userID string, tickerPredictions []TickerPrediction, amountInvested float64, expectedGain map[string]float64) error {
+	collection := config.DB.Collection("wallets")
+
+	filter := bson.M{"user_id": userID}
+	update := bson.M{
+		"$push": bson.M{"tickers": bson.M{"$each": tickerPredictions}},
+		"$set": bson.M{
+			"amount_invested": amountInvested,
+			"expected_gain":   expectedGain,
+			"date_added":      time.Now(),
+		},
+	}
+	opts := options.Update()
+
+	_, err := collection.UpdateOne(context.Background(), filter, update, opts)
+	return err
 }

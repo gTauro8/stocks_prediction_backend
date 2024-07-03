@@ -6,7 +6,9 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"myapp/config"
+	"time"
 )
 
 func GetUserByUsername(username string) (*User, error) {
@@ -27,4 +29,31 @@ func CreateUser(user *User) error {
 	user.ID = primitive.NewObjectID().Hex()
 	_, err := collection.InsertOne(context.TODO(), user)
 	return err
+}
+
+func GetAllUserIDs() ([]string, error) {
+	collection := config.DB.Collection("users")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	cursor, err := collection.Find(ctx, bson.M{}, options.Find().SetProjection(bson.M{"_id": 1}))
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	var userIDs []string
+	for cursor.Next(ctx) {
+		var user User
+		if err := cursor.Decode(&user); err != nil {
+			return nil, err
+		}
+		userIDs = append(userIDs, user.ID)
+	}
+	if err := cursor.Err(); err != nil {
+		return nil, err
+	}
+
+	return userIDs, nil
 }
