@@ -1,10 +1,11 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"stock_prediction_backend/models"
 	"stock_prediction_backend/utils"
+
+	"github.com/gin-gonic/gin"
 )
 
 func SaveUserResponses(c *gin.Context) {
@@ -71,8 +72,7 @@ func UpdateUserResponses(c *gin.Context) {
 		})
 	}
 
-	amountInvested := responses.InvestmentAmount
-	if err := models.AddToWallet(userID, tickerPredictions, amountInvested, recommendations.ExpectedGain); err != nil {
+	if err := models.AddToWallet(userID, tickerPredictions, recommendations.ExpectedGain); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update wallet"})
 		return
 	}

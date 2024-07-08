@@ -2,11 +2,12 @@ package models
 
 import (
 	"context"
+	"stock_prediction_backend/config"
+	"time"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"stock_prediction_backend/config"
-	"time"
 )
 
 type Prediction struct {
@@ -15,28 +16,27 @@ type Prediction struct {
 }
 
 type TickerPrediction struct {
-	Ticker      string       `json:"ticker" bson:"ticker"`
-	Predictions []Prediction `json:"predictions" bson:"predictions"`
+	Ticker         string       `json:"ticker" bson:"ticker"`
+	Predictions    []Prediction `json:"predictions" bson:"predictions"`
+	AmountInvested float64      `json:"amount_invested" bson:"amount_invested"`
 }
 
 type Wallet struct {
-	UserID         string             `json:"user_id" bson:"user_id"`
-	Tickers        []TickerPrediction `json:"tickers" bson:"tickers"`
-	AmountInvested float64            `json:"amount_invested" bson:"amount_invested"`
-	ExpectedGain   map[string]float64 `json:"expected_gain" bson:"expected_gain"`
-	DateAdded      time.Time          `json:"date_added" bson:"date_added"`
+	UserID       string             `json:"user_id" bson:"user_id"`
+	Tickers      []TickerPrediction `json:"tickers" bson:"tickers"`
+	ExpectedGain map[string]float64 `json:"expected_gain" bson:"expected_gain"`
+	DateAdded    time.Time          `json:"date_added" bson:"date_added"`
 }
 
-func AddToWallet(userID string, tickerPredictions []TickerPrediction, amountInvested float64, expectedGain map[string]float64) error {
+func AddToWallet(userID string, tickerPredictions []TickerPrediction, expectedGain map[string]float64) error {
 	collection := config.DB.Collection("wallets")
 
 	filter := bson.M{"user_id": userID}
 	update := bson.M{
 		"$push": bson.M{"tickers": bson.M{"$each": tickerPredictions}},
 		"$set": bson.M{
-			"amount_invested": amountInvested,
-			"expected_gain":   expectedGain,
-			"date_added":      time.Now(),
+			"expected_gain": expectedGain,
+			"date_added":    time.Now(),
 		},
 	}
 	opts := options.Update().SetUpsert(true)
@@ -57,16 +57,15 @@ func GetWallet(userID string) (*Wallet, error) {
 	return &wallet, err
 }
 
-func UpdateWallet(userID string, tickerPredictions []TickerPrediction, amountInvested float64, expectedGain map[string]float64) error {
+func UpdateWallet(userID string, tickerPredictions []TickerPrediction, expectedGain map[string]float64) error {
 	collection := config.DB.Collection("wallets")
 
 	filter := bson.M{"user_id": userID}
 	update := bson.M{
 		"$push": bson.M{"tickers": bson.M{"$each": tickerPredictions}},
 		"$set": bson.M{
-			"amount_invested": amountInvested,
-			"expected_gain":   expectedGain,
-			"date_added":      time.Now(),
+			"expected_gain": expectedGain,
+			"date_added":    time.Now(),
 		},
 	}
 	opts := options.Update()

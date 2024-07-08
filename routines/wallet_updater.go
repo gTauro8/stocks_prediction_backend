@@ -34,7 +34,7 @@ func updateWalletForUser(userID string) error {
 		return fmt.Errorf("failed to match investments with expected gain for user %s", userID)
 	}
 
-	err = models.UpdateWallet(userID, updatedWallet.Tickers, updatedWallet.AmountInvested, updatedWallet.ExpectedGain)
+	err = models.UpdateWallet(userID, updatedWallet.Tickers, updatedWallet.ExpectedGain)
 	if err != nil {
 		return fmt.Errorf("failed to update wallet for user %s: %v", userID, err)
 	}
@@ -43,7 +43,7 @@ func updateWalletForUser(userID string) error {
 }
 
 func matchInvestmentsWithExpectedGain(wallet *models.Wallet) *models.Wallet {
-	//TODO: Implement logic to match investments with expected gain
+	// TODO: Implement logic to match investments with expected gain
 	return wallet
 }
 

@@ -1,18 +1,22 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"stock_prediction_backend/models"
+
+	"github.com/gin-gonic/gin"
 )
 
 func AddToWallet(c *gin.Context) {
 	userID := c.Param("user_id")
 
 	var requestData struct {
-		Tickers        []string           `json:"tickers"`
-		AmountInvested float64            `json:"amount_invested"`
-		ExpectedGain   map[string]float64 `json:"expected_gain"`
+		Tickers []struct {
+			Ticker         string              `json:"ticker"`
+			AmountInvested float64             `json:"amount_invested"`
+			Predictions    []models.Prediction `json:"predictions"`
+		} `json:"tickers"`
+		ExpectedGain map[string]float64 `json:"expected_gain"`
 	}
 
 	if err := c.ShouldBindJSON(&requestData); err != nil {
@@ -21,21 +25,21 @@ func AddToWallet(c *gin.Context) {
 	}
 
 	var tickerPredictions []models.TickerPrediction
-	for _, ticker := range requestData.Tickers {
+	for _, t := range requestData.Tickers {
 		tickerPredictions = append(tickerPredictions, models.TickerPrediction{
-			Ticker:      ticker,
-			Predictions: []models.Prediction{},
+			Ticker:         t.Ticker,
+			Predictions:    t.Predictions,
+			AmountInvested: t.AmountInvested,
 		})
 	}
 
 	wallet := models.Wallet{
-		UserID:         userID,
-		Tickers:        tickerPredictions,
-		AmountInvested: requestData.AmountInvested,
-		ExpectedGain:   requestData.ExpectedGain,
+		UserID:       userID,
+		Tickers:      tickerPredictions,
+		ExpectedGain: requestData.ExpectedGain,
 	}
 
-	if err := models.AddToWallet(userID, wallet.Tickers, wallet.AmountInvested, wallet.ExpectedGain); err != nil {
+	if err := models.AddToWallet(userID, wallet.Tickers, wallet.ExpectedGain); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add to wallet"})
 		return
 	}

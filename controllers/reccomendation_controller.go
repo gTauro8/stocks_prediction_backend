@@ -51,7 +51,7 @@ func GetRecommendations(c *gin.Context) {
 		})
 	}
 
-	if err := models.AddToWallet(userID, tickerPredictions, userResponses.InvestmentAmount, recommendations.ExpectedGain); err != nil {
+	if err := models.AddToWallet(userID, tickerPredictions, recommendations.ExpectedGain); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save recommendations to wallet"})
 		return
 	}
