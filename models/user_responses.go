@@ -2,9 +2,10 @@ package models
 
 import (
 	"context"
+	"stock_prediction_backend/config"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"stock_prediction_backend/config"
 )
 
 type UserResponses struct {
@@ -13,7 +14,8 @@ type UserResponses struct {
 	EmploymentStatus        string   `json:"employment_status" bson:"employment_status"`
 	AnnualIncome            string   `json:"annual_income" bson:"annual_income"`
 	Wealth                  string   `json:"wealth" bson:"wealth"`
-	InvestmentObjectives    []string `json:"investment_objectives" bson:"investment_objectives"`
+	InvestmentObjectives    string   `json:"investment_objectives" bson:"investment_objectives"`
+	Investment_Purpose      string   `json:"investment_purpose" bson:"investment_purpose"`
 	InvestmentExperience    string   `json:"investment_experience" bson:"investment_experience"`
 	MarketKnowledge         string   `json:"market_knowledge" bson:"market_knowledge"`
 	ReactionToMarketDrop    string   `json:"reaction_to_market_drop" bson:"reaction_to_market_drop"`
