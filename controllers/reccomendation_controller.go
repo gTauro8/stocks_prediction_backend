@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"myapp/models"
-	"myapp/utils"
 	"net/http"
+	"stock_prediction_backend/models"
+	"stock_prediction_backend/utils"
 
 	"github.com/gin-gonic/gin"
 )

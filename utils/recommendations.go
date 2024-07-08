@@ -6,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"myapp/models"
 	"net/http"
+	"stock_prediction_backend/models"
 )
 
 type RecommendationResponse struct {

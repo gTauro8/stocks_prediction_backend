@@ -4,7 +4,7 @@ import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"myapp/config"
+	"stock_prediction_backend/config"
 )
 
 type UserResponses struct {

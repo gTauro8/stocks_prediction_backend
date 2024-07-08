@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"myapp/models"
 	"net/http"
+	"stock_prediction_backend/models"
 )
 
 func AddToWallet(c *gin.Context) {

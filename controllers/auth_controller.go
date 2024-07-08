@@ -1,17 +1,34 @@
 package controllers
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/crypto/bcrypt"
-	"myapp/models"
-	"myapp/utils"
 	"net/http"
+	"stock_prediction_backend/config"
+	"stock_prediction_backend/models"
+	"stock_prediction_backend/utils"
 )
 
 func Register(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
+		return
+	}
+
+	collection := config.DB.Collection("users")
+	filter := bson.M{"username": user.Username}
+	var existingUser models.User
+	err := collection.FindOne(context.TODO(), filter).Decode(&existingUser)
+	if err == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Username already exists"})
+		return
+	}
+	if err != mongo.ErrNoDocuments {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error checking username"})
 		return
 	}
 

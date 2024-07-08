@@ -2,7 +2,7 @@ package routines
 
 import (
 	"fmt"
-	"myapp/models"
+	"stock_prediction_backend/models"
 	"time"
 )
 

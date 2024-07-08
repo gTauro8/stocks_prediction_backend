@@ -2,8 +2,8 @@ package utils
 
 import (
 	"github.com/dgrijalva/jwt-go"
-	"myapp/config"
-	"myapp/models"
+	"stock_prediction_backend/config"
+	"stock_prediction_backend/models"
 	"time"
 )
 

@@ -6,7 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
-	"myapp/models"
+	"stock_prediction_backend/models"
 )
 
 var mongoURI = "mongodb://localhost:27017"

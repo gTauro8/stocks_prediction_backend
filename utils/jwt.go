@@ -3,7 +3,7 @@ package utils
 import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"myapp/config"
+	"stock_prediction_backend/config"
 	"time"
 )
 

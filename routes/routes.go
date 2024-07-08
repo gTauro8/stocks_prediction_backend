@@ -2,8 +2,8 @@ package routes
 
 import (
 	"github.com/gin-gonic/gin"
-	"myapp/controllers"
-	"myapp/middlewares"
+	"stock_prediction_backend/controllers"
+	"stock_prediction_backend/middlewares"
 )
 
 func SetupRoutes(r *gin.Engine) {
@@ -23,6 +23,7 @@ func SetupRoutes(r *gin.Engine) {
 			userResponses.PUT("/:user_id", controllers.UpdateUserResponses)
 			userResponses.GET("/:user_id", controllers.GetUserResponses)
 		}
+		authorized.GET("/profile/:user_id", controllers.GetProfile)
 		authorized.GET("/recommendations/:user_id", controllers.GetRecommendations)
 		authorized.POST("/wallet", middlewares.AuthMiddleware(), controllers.AddToWallet)
 		authorized.GET("/wallet/:user_id", middlewares.AuthMiddleware(), controllers.GetWallet)

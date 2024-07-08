@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"myapp/models"
-	"myapp/utils"
 	"net/http"
+	"stock_prediction_backend/models"
+	"stock_prediction_backend/utils"
 )
 
 func SaveUserResponses(c *gin.Context) {
@@ -95,4 +95,35 @@ func GetUserResponses(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, responses)
+}
+
+func GetProfile(c *gin.Context) {
+	userID := c.Param("user_id")
+
+	responses, err := models.GetUserResponses(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error retrieving responses"})
+		return
+	}
+
+	if responses == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Responses not found"})
+		return
+	}
+
+	wallet, err := models.GetWallet(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error retrieving wallet"})
+		return
+	}
+
+	if wallet == nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Wallet not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"user_responses": responses,
+		"wallet":         wallet,
+	})
 }
