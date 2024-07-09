@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"stock_prediction_backend/models"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,9 +22,12 @@ func AddToWallet(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&requestData); err != nil {
+		fmt.Printf("Error binding JSON: %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
+
+	fmt.Printf("Request data: %+v\n", requestData)
 
 	var tickerPredictions []models.TickerPrediction
 	for _, t := range requestData.Tickers {
@@ -37,9 +42,13 @@ func AddToWallet(c *gin.Context) {
 		UserID:       userID,
 		Tickers:      tickerPredictions,
 		ExpectedGain: requestData.ExpectedGain,
+		DateAdded:    time.Now(), // Assicurati di aggiungere il campo DateAdded qui
 	}
 
+	fmt.Printf("Wallet to be added: %+v\n", wallet)
+
 	if err := models.AddToWallet(userID, wallet.Tickers, wallet.ExpectedGain); err != nil {
+		fmt.Printf("Error adding to wallet: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add to wallet"})
 		return
 	}

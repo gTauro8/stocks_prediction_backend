@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"fmt"
 	"stock_prediction_backend/config"
 	"time"
 
@@ -41,7 +42,12 @@ func AddToWallet(userID string, tickerPredictions []TickerPrediction, expectedGa
 	}
 	opts := options.Update().SetUpsert(true)
 
+	fmt.Printf("Updating wallet for user: %s with filter: %+v and update: %+v\n", userID, filter, update)
+
 	_, err := collection.UpdateOne(context.Background(), filter, update, opts)
+	if err != nil {
+		fmt.Printf("Error updating wallet: %v\n", err)
+	}
 	return err
 }
 
