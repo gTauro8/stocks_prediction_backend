@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 	"stock_prediction_backend/models"
-	"stock_prediction_backend/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -43,7 +42,7 @@ func UpdateUserResponses(c *gin.Context) {
 		return
 	}
 
-	recommendations, err := utils.GetRecommendations(responses)
+	/*recommendations, err := utils.GetRecommendations(responses)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get recommendations"})
 		return
@@ -75,7 +74,7 @@ func UpdateUserResponses(c *gin.Context) {
 	if err := models.AddToWallet(userID, tickerPredictions, recommendations.ExpectedGain); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update wallet"})
 		return
-	}
+	}*/
 
 	c.JSON(http.StatusOK, gin.H{"message": "Responses and wallet updated successfully"})
 }

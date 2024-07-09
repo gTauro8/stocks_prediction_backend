@@ -35,7 +35,7 @@ def add_to_wallet(user_id, token, tickers, investment_amount):
     }
     tickers_data = [{
         "ticker": ticker,
-        "amount_invested": investment_amount * weight / 100,
+        "amount_invested": investment_amount * top_5_weights_percent[ticker] / 100,
         "predictions": []
     } for ticker, weight in tickers.items()]
     data = {
