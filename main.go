@@ -1,20 +1,17 @@
-// Package main is the entry point for the myapp application.
-// It sets up the configuration, starts routines, and configures the web server.
 package main
 
 import (
+	"log"
+	"time"
+
 	"stock_prediction_backend/config"
 	"stock_prediction_backend/routes"
 	"stock_prediction_backend/routines"
-	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-// main is the entry point of the application.
-// It sets up the application configuration, starts background routines,
-// and configures the HTTP server with CORS and routes.
 func main() {
 	// Setup application configuration
 	config.Setup()
@@ -24,6 +21,10 @@ func main() {
 
 	// Create a new Gin router
 	r := gin.Default()
+
+	// Add logging middleware
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
 
 	// Configure CORS middleware
 	r.Use(cors.New(cors.Config{
@@ -41,6 +42,6 @@ func main() {
 	// Start the HTTP server on port 8080
 	err := r.Run("0.0.0.0:8080")
 	if err != nil {
-		return
+		log.Fatalf("Failed to start server: %v", err)
 	}
 }

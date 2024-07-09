@@ -1,41 +1,54 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
+	"fmt"
 	"net/http"
 	"stock_prediction_backend/models"
+	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func AddToWallet(c *gin.Context) {
 	userID := c.Param("user_id")
 
 	var requestData struct {
-		Tickers        []string           `json:"tickers"`
-		AmountInvested float64            `json:"amount_invested"`
-		ExpectedGain   map[string]float64 `json:"expected_gain"`
+		Tickers []struct {
+			Ticker         string              `json:"ticker"`
+			AmountInvested float64             `json:"amount_invested"`
+			Predictions    []models.Prediction `json:"predictions"`
+		} `json:"tickers"`
+		ExpectedGain map[string]float64 `json:"expected_gain"`
 	}
 
 	if err := c.ShouldBindJSON(&requestData); err != nil {
+		fmt.Printf("Error binding JSON: %v\n", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
 
+	fmt.Printf("Request data: %+v\n", requestData)
+
 	var tickerPredictions []models.TickerPrediction
-	for _, ticker := range requestData.Tickers {
+	for _, t := range requestData.Tickers {
 		tickerPredictions = append(tickerPredictions, models.TickerPrediction{
-			Ticker:      ticker,
-			Predictions: []models.Prediction{},
+			Ticker:         t.Ticker,
+			Predictions:    t.Predictions,
+			AmountInvested: t.AmountInvested,
 		})
 	}
 
 	wallet := models.Wallet{
-		UserID:         userID,
-		Tickers:        tickerPredictions,
-		AmountInvested: requestData.AmountInvested,
-		ExpectedGain:   requestData.ExpectedGain,
+		UserID:       userID,
+		Tickers:      tickerPredictions,
+		ExpectedGain: requestData.ExpectedGain,
+		DateAdded:    time.Now(), // Assicurati di aggiungere il campo DateAdded qui
 	}
 
-	if err := models.AddToWallet(userID, wallet.Tickers, wallet.AmountInvested, wallet.ExpectedGain); err != nil {
+	fmt.Printf("Wallet to be added: %+v\n", wallet)
+
+	if err := models.AddToWallet(userID, wallet.Tickers, wallet.ExpectedGain); err != nil {
+		fmt.Printf("Error adding to wallet: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add to wallet"})
 		return
 	}
