@@ -132,7 +132,7 @@ if __name__ == "__main__":
                 'Spericolato': 0.14,
                 'Moderato': 0.12,
                 'Prudente': 0.10,
-                'Molto Prudente': 0.8
+                'Molto Prudente': 0.08
                 # Aggiungi altri casi secondo necessità
             }
             return switcher.get(risk_profile, 0.1)  # Default a 30 giorni se non corrisponde a nessun caso
