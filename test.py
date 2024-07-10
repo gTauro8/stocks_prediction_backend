@@ -29,7 +29,7 @@ def get_predictions(stock_tickers, start_date, end_date, days_in_future):
     else:
         raise Exception(f"Error fetching predictions: {response.text}")
 
-def add_to_wallet(user_id, token, tickers, investment_amount):
+def add_to_wallet(user_id, token, tickers, investment_amount, expected_return):
     url = f'http://localhost:8080/api/wallet/{user_id}'
     headers = {
         'Authorization': f'Bearer {token}'
@@ -77,9 +77,9 @@ if __name__ == "__main__":
         # Definizione dello switch-case per days_in_future in base a investment_objectives
         def get_days_in_future(investment_objectives):
             switcher = {
-                'Short Term 1-5 Years': 180,
-                'Medium Term 5-10 Years': 365,
-                'Long Term 10+ Years': 730
+                'Short Term 1-5 Years': 730,
+                'Medium Term 5-10 Years': 2556,
+                'Long Term 10+ Years': 4017
                 # Aggiungi altri casi secondo necessità
             }
             return switcher.get(investment_objectives, 30)  # Default a 30 giorni se non corrisponde a nessun caso
@@ -125,7 +125,21 @@ if __name__ == "__main__":
 
         # Vincoli e limiti per l'ottimizzazione
         num_assets = len(expected_returns)
-        target_return = 0.1  # Definire il rendimento target desiderato
+
+        # Definire il rendimento target desiderato
+        def get_target_return(risk_profile):
+            switcher = {
+                'Spericolato': 0.14,
+                'Moderato': 0.12,
+                'Prudente': 0.10,
+                'Molto Prudente': 0.8
+                # Aggiungi altri casi secondo necessità
+            }
+            return switcher.get(risk_profile, 0.1)  # Default a 30 giorni se non corrisponde a nessun caso
+
+        target_return = get_target_return(risk_profile)*(days_in_future/365)
+
+
         args = (expected_returns, cov_matrix, target_return)
         constraints = (
             {'type': 'eq', 'fun': lambda weights: np.sum(weights) - 1},
@@ -145,7 +159,12 @@ if __name__ == "__main__":
 
         # Identificazione delle migliori 5 pesature
         optimal_weights_series = pd.Series(optimal_weights, index=expected_returns.index)
-        top_5_weights = optimal_weights_series.nlargest(5)
+
+        if(investment_amount<1500001):
+            top_5_weights = optimal_weights_series.nlargest(5)
+        else:
+            top_5_weights = optimal_weights_series.nlargest(10) #distribuire maggiormente la liquidità con cifre alte,
+                                                                #si potrebbe fare a scaglioni fino a 20 stock
 
         # Calcolo delle percentuali delle migliori 5 pesature
         top_5_weights_percent = (top_5_weights / top_5_weights.sum()) * 100
@@ -171,7 +190,7 @@ if __name__ == "__main__":
 
 
         # Aggiungi al wallet
-        add_to_wallet(user_id, token, top_5_weights, investment_amount)
+        add_to_wallet(user_id, token, top_5_weights, investment_amount, format_decimal(optimal_return))
 
         # Visualizzazione della frontiera efficiente
         def efficient_frontier(expected_returns, cov_matrix, num_portfolios=100):
