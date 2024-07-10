@@ -41,8 +41,9 @@ func CreatePortfolio(c *gin.Context) {
 	// Prepara i parametri per il comando Python
 	investmentAmount := fmt.Sprintf("%f", userResponses.InvestmentAmount)
 	riskProfile := userResponses.RiskProfile
+	investmentObjectives := userResponses.InvestmentObjectives
 
-	fmt.Printf("Running Python script with parameters: UserID=%s, InvestmentAmount=%s, RiskProfile=%s\n", requestData.UserID, investmentAmount, riskProfile)
+	fmt.Printf("Running Python script with parameters: UserID=%s, InvestmentAmount=%s, RiskProfile=%s, InvestmentObjectives=%s\n", requestData.UserID, investmentAmount, riskProfile, investmentObjectives)
 
 	// Usa il percorso del sorgente del progetto
 	projectDir, err := os.Getwd()
@@ -53,8 +54,8 @@ func CreatePortfolio(c *gin.Context) {
 	}
 	scriptPath := filepath.Join(projectDir, "test.py")
 
-	// Comando per eseguire il file Python con l'ID utente, `investmentAmount` e `riskProfile` come argomenti
-	cmd := exec.Command("python", scriptPath, requestData.Username, requestData.Password, requestData.UserID, investmentAmount, riskProfile)
+	// Comando per eseguire il file Python con l'ID utente, `investmentAmount`, `riskProfile` e `investmentObjectives` come argomenti
+	cmd := exec.Command("python", scriptPath, requestData.Username, requestData.Password, requestData.UserID, investmentAmount, riskProfile, investmentObjectives)
 
 	// Esegui il comando e cattura l'output
 	output, err := cmd.CombinedOutput()
@@ -67,7 +68,7 @@ func CreatePortfolio(c *gin.Context) {
 
 	fmt.Printf("Python script output: %s\n", string(output))
 	fmt.Printf("Parameters received: Username=%s, Password=%s, UserID=%s\n", requestData.Username, requestData.Password, requestData.UserID)
-	fmt.Printf("Running Python script with parameters: UserID=%s, InvestmentAmount=%s, RiskProfile=%s\n", requestData.UserID, investmentAmount, riskProfile)
+	fmt.Printf("Running Python script with parameters: UserID=%s, InvestmentAmount=%s, RiskProfile=%s, InvestmentObjectives=%s\n", requestData.UserID, investmentAmount, riskProfile, investmentObjectives)
 
 	c.JSON(http.StatusOK, gin.H{"message": "Portfolio created successfully", "output": string(output)})
 }

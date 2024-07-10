@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 import yfinance as yf
 import numpy as np
+from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 
@@ -35,7 +36,7 @@ def add_to_wallet(user_id, token, tickers, investment_amount):
     }
     tickers_data = [{
         "ticker": ticker,
-        "amount_invested": investment_amount * weight / 100,
+        "amount_invested": investment_amount * top_5_weights_percent[ticker] / 100,
         "predictions": []
     } for ticker, weight in tickers.items()]
     data = {
@@ -50,8 +51,8 @@ def add_to_wallet(user_id, token, tickers, investment_amount):
         print(f"Error adding to wallet: {response.text}")
 
 if __name__ == "__main__":
-    if len(sys.argv) != 6:
-        print("Usage: python test.py <username> <password> <user_id> <investment_amount> <risk_profile>")
+    if len(sys.argv) != 7:
+        print("Usage: python test.py <username> <password> <user_id> <investment_amount> <risk_profile> <investment_objectives>")
         sys.exit(1)
 
     username = sys.argv[1]
@@ -59,19 +60,31 @@ if __name__ == "__main__":
     user_id = sys.argv[3]
     investment_amount = float(sys.argv[4])
     risk_profile = sys.argv[5]
+    investment_objectives = sys.argv[6]
 
-    print(f"Creating portfolio for user ID: {user_id} with investment amount: {investment_amount} and risk profile: {risk_profile}")
+    print(f"Creating portfolio for user ID: {user_id} with investment amount: {investment_amount}, risk profile: {risk_profile}, and investment objectives: {investment_objectives}")
     print(f"Login with Username: {username} and Password: {password}")
 
     token = login(username, password)
     
     try:
         # Parametri per la richiesta di previsione
-        stock_tickers = ["AAPL", "GOOG", "MSFT", "AMZN", "TSLA", "META", "NFLX", "NVDA", "INTC", "ORCL", "AMD", "IBM", "CSCO"]
+        stock_tickers = ["AAPL", "GOOG", "MSFT", "AMZN", "TSLA", "META", "NFLX", "NVDA", "INTC", "ORCL","AMD", "IBM", "CSCO", "PYPL", "ADBE", "CRM", "ABNB", "UBER", "SQ", "SNAP","ZM", "PINS", "FSLY"]
+        
         start_date = "2020-01-01"
-        end_date = "2024-07-06"
-        days_in_future = 30
+        end_date = (datetime.today() - timedelta(days=1)).strftime('%Y-%m-%d')
+        
+        # Definizione dello switch-case per days_in_future in base a investment_objectives
+        def get_days_in_future(investment_objectives):
+            switcher = {
+                'Short Term 1-5 Years': 180,
+                'Medium Term 5-10 Years': 365,
+                'Long Term 10+ Years': 730
+                # Aggiungi altri casi secondo necessità
+            }
+            return switcher.get(investment_objectives, 30)  # Default a 30 giorni se non corrisponde a nessun caso
 
+        days_in_future = get_days_in_future(investment_objectives)
         # Ottenere le previsioni dal servizio Flask
         predictions = get_predictions(stock_tickers, start_date, end_date, days_in_future)
 
@@ -153,6 +166,9 @@ if __name__ == "__main__":
 
         print("\nPercentuali delle migliori 5 pesature:")
         print(top_5_weights_percent.apply(lambda x: format_decimal(x)))
+        
+        
+
 
         # Aggiungi al wallet
         add_to_wallet(user_id, token, top_5_weights, investment_amount)

@@ -3,7 +3,6 @@ package controllers
 import (
 	"net/http"
 	"stock_prediction_backend/models"
-	"stock_prediction_backend/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,40 +41,40 @@ func UpdateUserResponses(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error updating responses"})
 		return
 	}
+	/*
+		recommendations, err := utils.GetRecommendations(responses)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get recommendations"})
+			return
+		}
 
-	recommendations, err := utils.GetRecommendations(responses)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get recommendations"})
-		return
-	}
-
-	var tickerPredictions []models.TickerPrediction
-	for ticker, preds := range recommendations.Predictions {
-		var predictions []models.Prediction
-		for _, pred := range preds {
-			date, ok := pred["ds"].(string)
-			if !ok {
-				continue
+		var tickerPredictions []models.TickerPrediction
+		for ticker, preds := range recommendations.Predictions {
+			var predictions []models.Prediction
+			for _, pred := range preds {
+				date, ok := pred["ds"].(string)
+				if !ok {
+					continue
+				}
+				value, ok := pred["yhat"].(float64)
+				if !ok {
+					continue
+				}
+				predictions = append(predictions, models.Prediction{
+					Date:  date,
+					Value: value,
+				})
 			}
-			value, ok := pred["yhat"].(float64)
-			if !ok {
-				continue
-			}
-			predictions = append(predictions, models.Prediction{
-				Date:  date,
-				Value: value,
+			tickerPredictions = append(tickerPredictions, models.TickerPrediction{
+				Ticker:      ticker,
+				Predictions: predictions,
 			})
 		}
-		tickerPredictions = append(tickerPredictions, models.TickerPrediction{
-			Ticker:      ticker,
-			Predictions: predictions,
-		})
-	}
 
-	if err := models.AddToWallet(userID, tickerPredictions, recommendations.ExpectedGain); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update wallet"})
-		return
-	}
+		if err := models.AddToWallet(userID, tickerPredictions, recommendations.ExpectedGain); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update wallet"})
+			return
+		}*/
 
 	c.JSON(http.StatusOK, gin.H{"message": "Responses and wallet updated successfully"})
 }
